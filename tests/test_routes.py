@@ -80,7 +80,7 @@ class TestAccountService(TestCase):
 
     def test_health(self):
         """It should be healthy"""
-        resp = self.app.get("/health")
+        resp = self.client.get("/health")
         self.assertEqual(resp.status_code, 200)
         data = resp.get_json()
         self.assertEqual(data["status"], "OK")
