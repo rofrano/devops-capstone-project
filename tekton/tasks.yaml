@@ -18,6 +18,8 @@ kind: Task
 metadata:
   name: nose
 spec:
+  workspaces:
+    - name: source
   params:
     - name: args
       description: Arguments to pass to nose
@@ -30,8 +32,14 @@ spec:
       script: |
         #!/bin/bash
         set -e
+
+        echo "***** Environment *****"
+        python --version
+        pwd
+
         echo "***** Installing dependencies *****"
         python -m pip install --upgrade pip wheel
         pip install -r requirements.txt
+
         echo "***** Running nosetests with: $(params.args)"
         nosetests $(params.args)
