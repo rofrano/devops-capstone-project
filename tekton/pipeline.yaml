@@ -48,8 +48,8 @@ spec:
       taskRef:
         name: nose
       params:
-      - name: args
-        value: "-v --with-spec --spec-color"
+        - name: args
+          value: "-v --with-spec --spec-color"
       runAfter:
         - clone
     - name: build
