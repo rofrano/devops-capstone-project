@@ -5,6 +5,36 @@ help: ## Display this help
 
 all: help
 
+.PHONY: cluster
+cluster: ## Create a Kubernetes cluster
+	$(info Creating Kubernetes cluster with a registry...)
+	k3d cluster create --registry-create cluster-registry:0.0.0.0:32000 --port '8080:80@loadbalancer'
+
+.PHONY: tekton
+tekton: ## Install Tekton into cluster
+	$(info Installing Tekton in the Cluster...)
+	kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
+	kubectl apply --filename https://storage.googleapis.com/tekton-releases/triggers/latest/release.yaml
+	kubectl apply --filename https://storage.googleapis.com/tekton-releases/triggers/latest/interceptors.yaml
+	kubectl apply --filename https://storage.googleapis.com/tekton-releases/dashboard/latest/tekton-dashboard-release.yaml
+
+.PHONY: clustertasks
+clustertasks: ## Create Tekton Cluster Tasks
+	$(info Creating Tekton Cluster Tasks...)
+	wget -qO - https://raw.githubusercontent.com/tektoncd/catalog/main/task/openshift-client/0.2/openshift-client.yaml | sed 's/kind: Task/kind: ClusterTask/g' | kubectl create -f -
+	wget -qO - https://raw.githubusercontent.com/tektoncd/catalog/main/task/buildah/0.4/buildah.yaml | sed 's/kind: Task/kind: ClusterTask/g' | kubectl create -f -
+
+.PHONY: build
+build: ## Build a Docker image
+	$(info Building Docker image...)
+	docker build --rm -t accounts:1.0 . 
+
+.PHONY: push
+push: ## Push image to K3d registry
+	$(info Pushing Docker image to K3D registry...)
+	docker tag accounts:1.0 localhost:32000/accounts:1.0
+	docker push localhost:32000/accounts:1.0
+
 venv: ## Create a Python virtual environment
 	$(info Creating Python 3 virtual environment...)
 	python3 -m venv ~/venv
@@ -16,11 +46,10 @@ install: ## Install Python dependencies
 
 lint: ## Run the linter
 	$(info Running linting...)
-	flake8 service --count --select=E9,F63,F7,F82 --show-source --statistics
-	flake8 service --count --max-complexity=10 --max-line-length=127 --statistics
-	pylint service --max-line-length 127
+	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+	flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
 
-test: ## Run the unit tests
+tests: ## Run the unit tests
 	$(info Running tests...)
 	nosetests -vv --with-spec --spec-color --with-coverage --cover-package=service
 

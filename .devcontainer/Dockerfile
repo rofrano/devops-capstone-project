@@ -1,4 +1,4 @@
-# The Cloud IDE uses Ubuntu 18.04 :(
+# The Skills Network Cloud IDE uses Ubuntu 18.04 :(
 FROM ubuntu:18.04
 
 # Add any tools that are needed
@@ -15,6 +15,14 @@ RUN apt-get update && \
         software-properties-common \
         python3-pip \
         python3-dev
+
+# Installing K3D for local Kubernetes development
+RUN curl -s "https://raw.githubusercontent.com/rancher/k3d/main/install.sh" | sudo bash
+
+# Installing Tekton CLI
+RUN curl -LO https://github.com/tektoncd/cli/releases/download/v0.18.0/tkn_0.18.0_Linux_x86_64.tar.gz && \
+    sudo tar xvzf tkn_0.18.0_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn && \
+    sudo ln -s /usr/local/bin/tkn /usr/bin/tkn
 
 # Create a user for development
 ARG USERNAME=theia
