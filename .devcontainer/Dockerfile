@@ -14,9 +14,7 @@ RUN apt-get update && \
         jq \
         software-properties-common \
         python3-pip \
-        python3-dev \
-        python3.8 \
-        python3.8-dev
+        python3-dev
 
 # Create a user for development
 ARG USERNAME=theia
@@ -31,7 +29,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
 # Set up the Python development environment
-WORKDIR /project
+WORKDIR /home/project
 RUN python3 -m pip install --upgrade pip wheel
 
 ENV PORT 8000
