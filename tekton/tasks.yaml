@@ -3,6 +3,7 @@ kind: Task
 metadata:
   name: echo
 spec:
+  description: This task will echo the message.
   params:
     - name: message
       description: The message to echo
@@ -18,6 +19,7 @@ kind: Task
 metadata:
   name: nose
 spec:
+  description: This task will run nosetests on the provided input.
   workspaces:
     - name: source
   params:
