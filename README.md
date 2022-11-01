@@ -94,6 +94,30 @@ The Account model contains the following fields:
 
 Complete this microservice by implementing REST API's for `READ`, `UPDATE`, `DELETE`, and `LIST` while maintaining **95%** code coverage. In true **Test Driven Development** fashion, first write tests for the code you "wish you had", and then write the code to make them pass.
 
+## Local Kubernetes Development
+
+This repo can also be used for local Kubernetes development. It is not advised that you run these commands in the Cloud IDE environment. The purpose of these commands are to simulate the Cloud IDE environment locally. Please only use these commands for working stand-alone on your own computer with the VSCode Remote Container environment provided.
+
+1. Bring up a local K3D Kubernetes cluster
+
+    ```bash
+    $ make cluster
+    ```
+
+1. Install Tekton
+
+    ```bash
+    $ make tekton
+    ```
+
+1. Install the ClusterTasks that the Cloud IDE has
+
+    ```bash
+    $ make clustertasks
+    ```
+
+You can now perform Tekton development locally, just like in the Cloud IDE lab environment.
+
 ## Author
 
 [John Rofrano](https://www.coursera.org/instructor/johnrofrano), Senior Technical Staff Member, DevOps Champion, @ IBM Research, and Instructor @ Coursera
