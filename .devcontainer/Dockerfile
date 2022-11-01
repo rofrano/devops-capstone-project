@@ -21,8 +21,14 @@ RUN curl -s "https://raw.githubusercontent.com/rancher/k3d/main/install.sh" | su
 
 # Installing Tekton CLI
 RUN curl -LO https://github.com/tektoncd/cli/releases/download/v0.18.0/tkn_0.18.0_Linux_x86_64.tar.gz && \
-    sudo tar xvzf tkn_0.18.0_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn && \
-    sudo ln -s /usr/local/bin/tkn /usr/bin/tkn
+    tar xvzf tkn_0.18.0_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn && \
+    ln -s /usr/local/bin/tkn /usr/bin/tkn
+
+# Install OpenShift CLI
+RUN curl -LO https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz && \
+    tar xvzf openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz && \
+    install openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit/oc /usr/local/bin/oc && \
+    ln -s /usr/local/bin/oc /usr/bin/oc
 
 # Create a user for development
 ARG USERNAME=theia
