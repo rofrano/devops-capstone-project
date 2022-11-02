@@ -17,6 +17,13 @@ spec:
       default: main
     - name: build-image
   tasks:
+    - name: init
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace          
+      taskRef:
+        name: cleanup
+
     - name: clone
       workspaces:
         - name: output
@@ -28,6 +35,9 @@ spec:
         value: $(params.repo-url)
       - name: revision
         value: $(params.branch)
+      runAfter:
+        - init
+
     - name: lint
       workspaces:
         - name: source
@@ -41,6 +51,7 @@ spec:
         value: ["--count","--max-complexity=10","--max-line-length=127","--statistics"]
       runAfter:
         - clone
+
     - name: tests
       workspaces:
         - name: source
@@ -48,10 +59,13 @@ spec:
       taskRef:
         name: nose
       params:
-        - name: args
-          value: "-v --with-spec --spec-color"
+      - name: database_uri
+        value: "sqlite:///test.db"
+      - name: args
+        value: "-v --with-spec --spec-color"
       runAfter:
         - clone
+
     - name: build
       workspaces:
         - name: source
